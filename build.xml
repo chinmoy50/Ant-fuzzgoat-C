@@ -1,36 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="fuzzgoat-C" default="build" basedir=".">
-    <!-- Define properties -->
-    <property name="src.dir" value="src"/>
-    <property name="build.dir" value="build"/>
-    <property name="bin.dir" value="${build.dir}/bin"/>
-    <property name="obj.dir" value="${build.dir}/obj"/>
-    <property name="compiler" value="gcc"/>
-    <property name="cflags" value="-Wall -g -O2"/>
-
-    <!-- Initialize directories -->
-    <target name="init">
-        <mkdir dir="${build.dir}"/>
-        <mkdir dir="${bin.dir}"/>
-        <mkdir dir="${obj.dir}"/>
-    </target>
-
-    <!-- Compile source files -->
-    <target name="build" depends="init">
-        <echo message="Compiling fuzzgoat-C project..."/>
-        <apply executable="${compiler}" failonerror="true" dest="${bin.dir}">
-            <arg value="${cflags}"/>
-            <arg value="-o"/>
-            <arg value="${bin.dir}/fuzzgoat"/>
-            <fileset dir="${src.dir}" includes="**/*.c"/>
-        </apply>
-        <echo message="Build completed. Binary located at ${bin.dir}/fuzzgoat"/>
-    </target>
-
-    <!-- Clean up build directories -->
-    <target name="clean">
-        <echo message="Cleaning build directories..."/>
-        <delete dir="${build.dir}"/>
-        <echo message="Clean completed."/>
-    </target>
+<!-- Define properties -->
+<property name="cc" value="gcc"/> <!-- Use gcc from MinGW -->
+<property name="cflags" value="-I."/> <!-- Compiler flags to include current directory -->
+<property name="libs" value="-lm"/>   <!-- Link math library -->
+<property name="src" value="main.c fuzzgoat.c"/> <!-- Source files -->
+<property name="bin" value="fuzzgoat.exe"/> <!-- Output executable name for Windows -->
+ 
+    <!-- Initialize the build directory -->
+<target name="init">
+<mkdir dir="build"/>
+</target>
+ 
+    <!-- Clean target: Remove previous build files -->
+<target name="clean">
+<delete file="${bin}"/>
+<echo message="Clean completed."/>
+</target>
+ 
+    <!-- Compile the project and create fuzzgoat executable -->
+<target name="build" depends="clean">
+<echo message="Building fuzzgoat..."/>
+<exec executable="${cc}">
+<arg value="-o"/>
+<arg value="${bin}"/>
+<arg value="${cflags}"/>
+<arg line="${src}"/>
+<arg value="${libs}"/>
+</exec>
+</target>
+ 
 </project>
